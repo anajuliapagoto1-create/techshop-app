@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechShop - Acesso ao Sistema</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* --- TELA 1: LOGIN / ACESSO DIRETO --- */
+        #tela-cadastro {
+            max-width: 400px;
+            margin: 80px auto;
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        #tela-cadastro h2 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+
+        .form-login {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .btn-entrar {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .btn-entrar:hover {
+            background-color: #34495e;
+        }
+
+        /* --- TELA 2: PAINEL DO SISTEMA (INICIALMENTE ESCONDIDA) --- */
+        #tela-painel {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .boas-vindas {
+            font-size: 14px;
+        }
+
+        .btn-sair {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .painel-controle {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .secao {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #ecf0f1;
+        }
+
+        button.btn-acao {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-editar { background-color: #f39c12; }
+        .btn-excluir { background-color: #e74c3c; }
+    </style>
+</head>
+<body>
+
+    <!-- ======================================================= -->
+    <!-- TELA 1: LOGIN / ACESSO DIRETO -->
+    <!-- ======================================================= -->
+    <section id="tela-cadastro">
+        <h2>TechShop - Acesso</h2>
+        <p>Informe seus dados para acessar o sistema.</p>
+        
+        <form class="form-login" onsubmit="realizarLogin(event)">
+            <div class="form-group">
+                <label for="nome-usuario">Nome:</label>
+                <input type="text" id="nome-usuario" placeholder="Ex: Ana Júlia" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email-usuario">E-mail:</label>
+                <input type="email" id="email-usuario" placeholder="Ex: ana@exemplo.com" required>
+            </div>
+
+            <button type="submit" class="btn-entrar">Entrar no Sistema</button>
+        </form>
+    </section>
+
+    <!-- ======================================================= -->
+    <!-- TELA 2: PAINEL DO BANCO DE DADOS (EXIBIDA APÓS O LOGIN) -->
+    <!-- ======================================================= -->
+    <section id="tela-painel">
+        <header>
+            <h1>TechShop - Painel do Sistema</h1>
+            <div class="boas-vindas">
+                <span id="usuario-logado">Usuário: -</span>
+                <button class="btn-sair" onclick="sairDoSistema()">Sair</button>
+            </div>
+        </header>
+
+        <!-- Controle de Nível de Acesso (RBAC) -->
+        <div class="painel-controle">
+            <label for="user-level"><strong>Nível de Acesso Simulado:</strong></label>
+            <select id="user-level">
+                <option value="Cliente">Cliente (Apenas Leitura)</option>
+                <option value="Admin">Administrador (Acesso Total)</option>
+            </select>
+            <small style="color: #666;">Altere para "Administrador" para testar alterações e exclusões.</small>
+        </div>
+
+        <!-- Seção 1: Relatório de Vendas -->
+        <div class="secao">
+            <h2>Relatório de Vendas (DQL - JOINs)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Cliente</th>
+                        <th>Total do Pedido</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-vendas"></tbody>
+            </table>
+        </div>
+
+        <!-- Seção 2: Análise de Estoque -->
+        <div class="secao">
+            <h2>Análise de Estoque e Vendas (DQL - LEFT JOIN)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Produto</th>
+                        <th>Produto</th>
+                        <th>Estoque Atual</th>
+                        <th>Total Vendido</th>
+                        <th>Ações (Admin)</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-estoque"></tbody>
+            </table>
+        </div>
+
+        <!-- Seção 3: Lista de Clientes Cadastrados -->
+        <div class="secao">
+            <h2>Clientes Cadastrados no Banco</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Ações (Admin)</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-clientes"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Importação das funções JS externas -->
+    <script src="script.js"></script>
+</body>
+</html>
